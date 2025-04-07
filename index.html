@@ -1,1 +1,56 @@
-abc
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Tool Suite</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f9fafb;
+      margin: 0;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .card {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .button {
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      font-size: 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+    .button:hover {
+      background-color: #1e40af;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">🛠️ My Tool Suite</h1>
+    <div class="card">
+      <h2>Tool 1: Simple Alert</h2>
+      <p>Click the button below to trigger a sample function.</p>
+      <button class="button" onclick="handleClick()">Run Tool</button>
+    </div>
+  </div>
+
+  <script>
+    function handleClick() {
+      const response = "Tool executed successfully!";
+      alert(response);
+    }
+  </script>
+</body>
+</html>
