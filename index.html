@@ -34,22 +34,104 @@
     .button:hover {
       background-color: #1e40af;
     }
+    .input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 0.375rem;
+      font-size: 1rem;
+    }
+    #notification {
+        margin-top: 10px;
+        font-size: 20px;
+        color: green;
+        visibility: hidden;
+    }
+    #loading {
+        position: fixed; /* Position it fixed to the viewport */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999; /* Make sure it's above all other content */
+        backdrop-filter: blur(5px); /* Apply blur effect to the background */
+    }
+    
+    #loading.hide {
+        display: none;
+    }
+
+    /* The spinner style */
+    .spinner {
+        border: 8px solid #f3f3f3; /* Light grey background */
+        border-top: 8px solid #3498db; /* Blue color for the top part */
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1.5s linear infinite; /* Spin animation */
+    }
+    #loading .msg {
+        color: white;
+        margin-top: 10px;
+    }
+
+    /* Keyframe for spinning the spinner */
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
   </style>
+  <script type="text/javascript" src="main.js"></script>
 </head>
 <body>
   <div class="container">
-    <h1 class="title">🛠️ My Tool Suite</h1>
+    <h1 class="title">🛠️ Công cụ</h1>
     <div class="card">
-      <h2>Tool 1: Simple Alert</h2>
-      <p>Click the button below to trigger a sample function.</p>
-      <button class="button" onclick="handleClick()">Run Tool</button>
+      <h2>Kiểm tra đơn hàng xuất kho</h2>
+      <p>Gõ danh sách các đơn cần kiểm tra vào bên dưới. Mỗi đơn cách nhau bằng dấu cách.</p>
+      <p>Mẹo: Copy nhiều mã đơn hàng trên sheet và dán vào đây.</p>
+      <input id="userInput" class="input" type="text" placeholder="Nhập đơn hàng...">
+      <button class="button" onclick="handleClick()">Kiểm tra</button>
+      <div id="notification"></div>
+    </div>
+  </div>
+  <div id="loading" class="hide">
+    <div>
+        <div class="spinner"></div>
+        <div class="msg">Chờ xíu ^_^</div> 
     </div>
   </div>
 
   <script>
     function handleClick() {
-      const response = "Tool executed successfully!";
-      alert(response);
+        notification.style.visibility = 'hidden';
+        loading = document.getElementById('loading');
+        loading.classList.remove("hide");
+        const input = document.getElementById('userInput').value;
+        // const response = input ? `You entered: ${input}` : "Please enter something!";
+        DOIds = input.trim().split(' ');
+        console.log('length: ', DOIds.length);
+        getDOs(DOIds).then(res => {
+            const copyHolder = res.result ? navigator.clipboard.writeText(res.result) : Promise.resolve();
+            return copyHolder.then(() => Promise.resolve({
+                failed: res.failed, 
+                notFound: res.notFound
+            }));
+        }).then(res => {
+            if (res.failed == 0 && res.notFound == 0) {
+                notification.textContent = 'Đã copy nội dung. Hãy dán nó vào sheet!';
+            } else {
+                notification.textContent = `${res.failed} mục thất bại, ${res.notFound} mục không tìm thấy.`;
+            }
+            notification.style.visibility = 'visible';
+            loading.classList.add("hide");
+        });
     }
   </script>
 </body>
