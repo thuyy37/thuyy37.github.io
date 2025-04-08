@@ -2,6 +2,10 @@ const oaSignKey = 'OA-Sign',
    apiVersion = '1.0';
 const sessionIdKey = 'sessionId';
 
+document.getElementById('sessionIdSetter').addEventListener('click', () => {
+   openModal();
+});
+
 function calcHash() {
     let _0xe9e1 = [
       'l L(d){v(p r,a,m="",f=-1;++f<d.q;)r=d.x(f),a=f+1<d.q?d.x(f+1):0,r>=1R&&1W>=r&&a>=1V&&1U>=a&&(r=1F+((Q&r)<<10)+(Q&a),f++),1v>=r?m+=y.A(r):1f>=r?m+=y.A(1Q|r>>>6&1S,u|w&r):C>=r?m+=y.A(1I|r>>>12&15,u|r>>>6&w,u|w&r):1A>=r&&(m+=y.A(1y|r>>>18&7,u|r>>>12&w,u|r>>>6&w,u|w&r));o m}l O(d){v(p r=P(d.q>>2),a=0;a<r.q;a++)r[a]=0;v(p a=0;a<8*d.q;a+=8)r[a>>5]|=(E&d.x(a/8))<<a%B;o r}l M(d,r){d[r>>5]|=u<<r%B,d[(r+1w>>>9<<4)+14]=r;v(p a=1H,m=-1D,f=-1E,n=1X,t=0;t<d.q;t+=16){p i=a,h=m,g=f,e=n;a=k(a,m,f,n,d[t+0],7,-1G),n=k(n,a,m,f,d[t+1],12,-1C),f=k(f,n,a,m,d[t+2],17,1B),m=k(m,f,n,a,d[t+3],22,-1x),a=k(a,m,f,n,d[t+4],7,-1J),n=k(n,a,m,f,d[t+5],12,1T),f=k(f,n,a,m,d[t+6],17,-1L),m=k(m,f,n,a,d[t+7],22,-1K),a=k(a,m,f,n,d[t+8],7,1M),n=k(n,a,m,f,d[t+9],12,-1N),f=k(f,n,a,m,d[t+10],17,-1P),m=k(m,f,n,a,d[t+11],22,-1O),a=k(a,m,f,n,d[t+12],7,1u),n=k(n,a,m,f,d[t+13],12,-1t),f=k(f,n,a,m,d[t+14],17,-19),m=k(m,f,n,a,d[t+15],22,Z),a=j(a,m,f,n,d[t+1],5,-1a),n=j(n,a,m,f,d[t+6],9,-1b),f=j(f,n,a,m,d[t+11],14,1d),m=j(m,f,n,a,d[t+0],20,-1c),a=j(a,m,f,n,d[t+5],5,-Y),n=j(n,a,m,f,d[t+10],9,X),f=j(f,n,a,m,d[t+15],14,-S),m=j(m,f,n,a,d[t+4],20,-R),a=j(a,m,f,n,d[t+9],5,T),n=j(n,a,m,f,d[t+14],9,-U),f=j(f,n,a,m,d[t+3],14,-W),m=j(m,f,n,a,d[t+8],20,V),a=j(a,m,f,n,d[t+13],5,-1e),n=j(n,a,m,f,d[t+2],9,-1p),f=j(f,n,a,m,d[t+7],14,1o),m=j(m,f,n,a,d[t+12],20,-1q),a=b(a,m,f,n,d[t+5],4,-1r),n=b(n,a,m,f,d[t+8],11,-1s),f=b(f,n,a,m,d[t+11],16,1n),m=b(m,f,n,a,d[t+14],23,-1m),a=b(a,m,f,n,d[t+1],4,-1h),n=b(n,a,m,f,d[t+4],11,1g),f=b(f,n,a,m,d[t+7],16,-1i),m=b(m,f,n,a,d[t+10],23,-1j),a=b(a,m,f,n,d[t+13],4,1l),n=b(n,a,m,f,d[t+0],11,-1k),f=b(f,n,a,m,d[t+3],16,-1z),m=b(m,f,n,a,d[t+6],23,25),a=b(a,m,f,n,d[t+9],4,-2r),n=b(n,a,m,f,d[t+12],11,-2s),f=b(f,n,a,m,d[t+15],16,2t),m=b(m,f,n,a,d[t+2],23,-2q),a=c(a,m,f,n,d[t+0],6,-2p),n=c(n,a,m,f,d[t+7],10,2m),f=c(f,n,a,m,d[t+14],15,-2n),m=c(m,f,n,a,d[t+5],21,-2v),a=c(a,m,f,n,d[t+12],6,1Y),n=c(n,a,m,f,d[t+3],10,-2x),f=c(f,n,a,m,d[t+10],15,-2w),m=c(m,f,n,a,d[t+1],21,-2y),a=c(a,m,f,n,d[t+8],6,2o),n=c(n,a,m,f,d[t+15],10,-2k),f=c(f,n,a,m,d[t+6],15,-28),m=c(m,f,n,a,d[t+13],21,29),a=c(a,m,f,n,d[t+4],6,-2a),n=c(n,a,m,f,d[t+11],10,-27),f=c(f,n,a,m,d[t+2],15,24),m=c(m,f,n,a,d[t+9],21,-2b),a=s(a,i),m=s(m,h),f=s(f,g),n=s(n,e)}o P(a,m,f,n)}l z(d,r,a,m,f,n){o s(D(s(s(r,d),s(m,n)),f),a)}l k(d,r,a,m,f,n,t){o z(r&a|~r&m,d,r,f,n,t)}l j(d,r,a,m,f,n,t){o z(r&m|a&~m,d,r,f,n,t)}l b(d,r,a,m,f,n,t){o z(r^a^m,d,r,f,n,t)}l c(d,r,a,m,f,n,t){o z(a^(r|~m),d,r,f,n,t)}l s(d,r){p a=(C&d)+(C&r),m=(d>>16)+(r>>16)+(a>>16);o m<<16|C&a}l N(d){v(p r="",a=0;a<B*d.q;a+=8)r+=y.A(d[a>>5]>>>a%B&E);o r}l D(d,r){o d<<r|d>>>B-r}l J(d){v(p r,a="2f",m="",f=0;f<d.q;f++)r=d.x(f),m+=a.G(r>>>4&15)+a.G(15&r);o m}p K=l(){v(p d=[2e,2d,2g,2h,2j,2i,2c,1Z,"26"],r=[],a=0;4>a;a++)r[a]=d[d[d.q-1].x(8+a)%8];p m=L(H.2l("F-I"));r=r.2z(O(m)),H.2u("F-I",J(N(M(r,8*(16+m.q)))))};K();',
@@ -114,7 +118,6 @@ async function getDOs(DOs) {
       };
       console.log('Requests fulfiled: ', DOs.length);
       let failed = 0, notFound = 0;
-      console.log('aa;', promises)
       const result = promises.map(item => {
          if (item && item.data) {
                obj = item.data.items[0];
@@ -159,3 +162,54 @@ function stopLoading() {
    loading.classList.add("hide");
 }
 
+function handleClick() {
+   if (!sessionStorage.getItem(sessionIdKey)) {
+      openModal();
+   }
+   showLoading();
+   notification.style.visibility = 'hidden';
+   const input = document.getElementById('userInput').value;
+   // const response = input ? `You entered: ${input}` : "Please enter something!";
+   DOIds = input.trim().split(' ');
+   console.log('length: ', DOIds.length);
+   getDOs(DOIds).then(res => {
+      const copyHolder = res?.result ? navigator.clipboard.writeText(res.result) : Promise.resolve();
+      return copyHolder.then(() => Promise.resolve({
+         failed: res.failed, 
+         notFound: res.notFound
+      }));
+   }).then(res => {
+      if (res.failed == 0 && res.notFound == 0) {
+         notification.textContent = 'Đã copy nội dung. Hãy dán nó vào sheet!';
+      } else {
+         notification.textContent = `${res.failed} mục thất bại, ${res.notFound} mục không tìm thấy.`;
+      }
+      notification.style.visibility = 'visible';
+      stopLoading();
+   })
+   .catch(err => {
+      console.log(err)
+   });
+}
+
+
+/*
+Modal
+*/
+function openModal() {
+   document.getElementById('sessionIdModal').style.display = "flex";
+}
+
+function closeModal() {
+   document.getElementById('sessionIdModal').style.display = "none";
+}
+
+function submitModal() {
+   const sessId = document.getElementById("sessionId").value.trim();
+   if (!sessId) {
+      alert("Vui lòng nhập vào.");
+      return;
+   }
+   sessionStorage.setItem(sessionIdKey, sessId);
+   closeModal();
+}

@@ -3,121 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Tool Suite</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      background-color: #f9fafb;
-      margin: 0;
-      padding: 2rem;
-    }
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    .card {
-      background: white;
-      border-radius: 1rem;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .button {
-      background-color: #2563eb;
-      color: white;
-      border: none;
-      padding: 0.75rem 1.25rem;
-      font-size: 1rem;
-      border-radius: 0.5rem;
-      cursor: pointer;
-    }
-    .button:hover {
-      background-color: #1e40af;
-    }
-    .input {
-      width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.5rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 0.375rem;
-      font-size: 1rem;
-    }
-    #notification {
-        margin-top: 10px;
-        font-size: 20px;
-        color: green;
-        visibility: hidden;
-    }
-    #loading {
-        position: fixed; /* Position it fixed to the viewport */
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999; /* Make sure it's above all other content */
-        backdrop-filter: blur(5px); /* Apply blur effect to the background */
-    }
-    
-    #loading.hide {
-        display: none;
-    }
-
-    /* The spinner style */
-    .spinner {
-        border: 8px solid #f3f3f3; /* Light grey background */
-        border-top: 8px solid #3498db; /* Blue color for the top part */
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        animation: spin 1.5s linear infinite; /* Spin animation */
-    }
-    #loading .msg {
-        color: white;
-        margin-top: 10px;
-    }
-
-    /* Keyframe for spinning the spinner */
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: rgba(0, 0, 0, 0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .modal-content {
-      background: white;
-      padding: 2rem;
-      border-radius: 8px;
-      min-width: 300px;
-      text-align: center;
-    }
-
-    .modal input {
-      padding: 0.5rem;
-      width: 80%;
-      margin-top: 1rem;
-    }
-
-    .modal button {
-      margin: 1rem 0.5rem 0 0.5rem;
-    }
-  </style>
-  <script type="text/javascript" src="main.js"></script>
+  <title>Thuy Thanh</title>
+  <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
+  <div class="top-bar">
+    <div class="left">
+      <img class="logo" src="img/images.jpeg" />
+      <div class="name">Flash</div>
+    </div>
+    <div class="tools">
+      <button id="sessionIdSetter" class="button">Đặt session id</button>
+    </div>
+  </div>
   <div class="container">
     <h1 class="title">🛠️ Công cụ của tui</h1>
     <div class="card">
@@ -129,15 +27,17 @@
       <div id="notification"></div>
     </div>
   </div>
+
   <div class="modal" id="sessionIdModal">
     <div class="modal-content">
       <h2>Nhập session id</h2>
       <input type="text" id="sessionId" placeholder="Nhập session id nha..." />
       <br/>
-      <button onclick="submitModal()">OK</button>
-      <button onclick="closeModal()">Huỷ</button>
+      <button class="button" onclick="submitModal()">OK</button>
+      <button class="button" onclick="closeModal()">Huỷ</button>
     </div>
   </div>
+
   <div id="loading" class="hide">
     <div>
         <div class="spinner"></div>
@@ -145,64 +45,6 @@
     </div>
   </div>
 
-  <script>
-    
-const sessionIdKey = 'sessionId';
-function handleClick() {
-   if (!sessionStorage.getItem(sessionIdKey)) {
-      openModal();
-   }
-   showLoading();
-   notification.style.visibility = 'hidden';
-   const input = document.getElementById('userInput').value;
-   // const response = input ? `You entered: ${input}` : "Please enter something!";
-   DOIds = input.trim().split(' ');
-   console.log('length: ', DOIds.length);
-   getDOs(DOIds).then(res => {
-      const copyHolder = res?.result ? navigator.clipboard.writeText(res.result) : Promise.resolve();
-      return copyHolder.then(() => Promise.resolve({
-         failed: res.failed, 
-         notFound: res.notFound
-      }));
-   }).then(res => {
-      if (res.failed == 0 && res.notFound == 0) {
-         notification.textContent = 'Đã copy nội dung. Hãy dán nó vào sheet!';
-      } else {
-         notification.textContent = `${res.failed} mục thất bại, ${res.notFound} mục không tìm thấy.`;
-      }
-      notification.style.visibility = 'visible';
-      stopLoading();
-   })
-   .catch(err => {
-      console.log(err)
-   });
-}
-
-function login() {
-   
-}
-
-
-/*
-Modal
-*/
-function openModal() {
-   document.getElementById('sessionIdModal').style.display = "flex";
-}
-
-function closeModal() {
-   document.getElementById('sessionIdModal').style.display = "none";
-}
-
-function submitModal() {
-   const sessId = document.getElementById("sessionId").value.trim();
-   if (!sessId) {
-      alert("Vui lòng nhập vào.");
-      return;
-   }
-   sessionStorage.setItem(sessionIdKey, sessId);
-   closeModal();
-}
-  </script>
+  <script type="text/javascript" src="js/script.js"></script>
 </body>
 </html>
