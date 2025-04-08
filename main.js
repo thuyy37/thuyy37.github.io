@@ -1,6 +1,6 @@
 const oaSignKey = 'OA-Sign',
-    sessionId = 'frh419mt2g2csqd8qo4bhfdlg7',
-    apiVersion = '1.0';
+   apiVersion = '1.0';
+const sessionIdKey = 'sessionId';
 
 function calcHash() {
     let _0xe9e1 = [
@@ -49,85 +49,168 @@ function calcHash() {
 }
 
 function prepareOASign(api, param) {
-    const deviceId = 3833609500 + 1e3 * Math.random(),
-        timeStamp = 1e3 * Date.now() + new Date().getMilliseconds();
+   const deviceId = 3833609500 + 1e3 * Math.random(),
+      timeStamp = 1e3 * Date.now() + new Date().getMilliseconds(),
+      sessionId = sessionStorage.getItem(sessionIdKey);
 
-    sessionStorage.setItem(oaSignKey, deviceId + sessionId + api + apiVersion + param + timeStamp);
-    calcHash();
-    return {deviceId, timeStamp};
+   sessionStorage.setItem(oaSignKey, deviceId + sessionId + api + apiVersion + param + timeStamp);
+   calcHash();
+   return {deviceId, timeStamp, sessionId};
 }
 
+const wait = ms => new Promise((resolve) => {
+   setTimeout(() => resolve(), ms);
+});
+
 function getDO(DO) {
-    params = `{"timeType":"audit_time","searchType":"orderInfo","search":"${DO}","platformStatus":"","expressName":"","prompt":"","logisticCompanyId":"","kinds":"=","kindsNum":"","goods":"=","deliverySn":"","goodsNum":"","sellerId":"","distribution":"","total_items":1,"page":1,"limit":20,"platformContain":"in","promptContain":"in","markContain":"in","repositoryContain":"in","repositoryId":[],"warehouseId":"20","start":"2025-03-07 00:00:00","end":"2025-04-07 23:59:59"}`
-    const {deviceId, timeStamp} = prepareOASign('wms.deliveryOrder.listByWarehouseId', params);
-    data = `api=wms.deliveryOrder.listByWarehouseId&version=1.0&timestamp=${timeStamp}&params=${encodeURIComponent(params)}&`
-    api = 'https://wms-api.flashfulfillment.vn/?api=wms.deliveryOrder.listByWarehouseId';
-    headers = {
-        'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'OA-App-Key': '1001520',
-        'OA-App-Market-ID': '678',
-        'OA-App-Version': '1.0',
-        'OA-Device-Id': deviceId,
-        'OA-Session-Id': sessionId,
-        'OA-Sign': sessionStorage.getItem(oaSignKey)
-    };
-  
-    return fetch(api, {
+   params = `{"timeType":"audit_time","searchType":"orderInfo","search":"${DO}","platformStatus":"","expressName":"","prompt":"","logisticCompanyId":"","kinds":"=","kindsNum":"","goods":"=","deliverySn":"","goodsNum":"","sellerId":"","distribution":"","total_items":1,"page":1,"limit":20,"platformContain":"in","promptContain":"in","markContain":"in","repositoryContain":"in","repositoryId":[],"warehouseId":"20","start":"2025-03-07 00:00:00","end":"2025-04-07 23:59:59"}`
+   const {deviceId, timeStamp, sessionId} = prepareOASign('wms.deliveryOrder.listByWarehouseId', params);
+   data = `api=wms.deliveryOrder.listByWarehouseId&version=1.0&timestamp=${timeStamp}&params=${encodeURIComponent(params)}&`
+   api = 'https://wms-api.flashfulfillment.vn/?api=wms.deliveryOrder.listByWarehouseId';
+   headers = {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'OA-App-Key': '1001520',
+      'OA-App-Market-ID': '678',
+      'OA-App-Version': '1.0',
+      'OA-Device-Id': deviceId,
+      'OA-Session-Id': sessionId,
+      'OA-Sign': sessionStorage.getItem(oaSignKey)
+   };
+
+   // if (!sessionId) {
+   //    return new Promise((resolve, reject) => {
+   //       reject(new Error("Session expired", {cause: {code: "SESSIONEXPIRED", message: "Session expired" }}));
+   //    });
+   // }
+
+   return fetch(api, {
       method: 'POST',
       headers: headers,
       body: data
-    })
-    .then(res => {
-        // console.log('res', res.json());
-        return res.json();
-    })
-    .catch(err => {
-        console.error("Failed to fetch: ", err);
-    });
-}
+   })
+   .then(res => {
+      if (!res.success) {
+         if (res.errorCode == 'AD.SessionNotExists') {
+            sessionStorage.removeItem(sessionIdKey);
+            throw new Error("Session expired", {cause: {code: "SESSIONEXPIRED", message: "Session expired" }});
+         }
+      }
+      return res.json();
+   })
+   .catch(err => {
+      console.error("Failed to fetch: ", err);
+      throw err;
+   });
+};
 
 async function getDOs(DOs) {
-    try {
-        const promises = [];
-        for (const DO of DOs) {
-            const rs = await getDO(DO);
-            promises.push(rs);
-            await new Promise(resolve => setTimeout(resolve, 200));
-        };
-        console.log('Requests fulfiled: ', DOs.length);
-        let failed = 0, notFound = 0;
-        console.log(promises)
-        const result = promises.map(item => {
-            if (item && item.data) {
-                obj = item.data.items[0];
-                if (!obj) {
-                    notFound += 1;
-                    return '';
-                }
-                // return {
-                //     deliverySn: obj.deliverySn,
-                //     sellerName: obj.sellerName,
-                //     orderSn: obj.orderSn,
-                //     express: `${obj.expressName}\n${obj.expressSn}`
-                // };
-                // const rows = [
-                //     ["v1", "v2", "v3", "v4"],
-                //     ["x1", "x2", "x3", "x4"]
-                //   ];
-                
-                //   const tsv = rows.map(row => row.join('\t')).join('\n');
-                
-                //   console.log(tsv);
-                return `${obj.deliverySn}\t${obj.sellerName}\t${obj.orderSn}\t${obj.expressName} ${obj.expressSn}`;
-            } else {
-                failed += 1;
-                return '';
-            }
-        }).join('\n');
-        console.log(result)
-        return {failed, notFound, result}
-    } catch (error) {
-        console.log(error)
-    }
+   try {
+      const promises = [];
+      for (const DO of DOs) {
+         const rs = await getDO(DO);
+         promises.push(rs);
+         await new Promise(resolve => setTimeout(resolve, 200));
+      };
+      console.log('Requests fulfiled: ', DOs.length);
+      let failed = 0, notFound = 0;
+      console.log('aa;', promises)
+      const result = promises.map(item => {
+         if (item && item.data) {
+               obj = item.data.items[0];
+               if (!obj) {
+                  notFound += 1;
+                  return '';
+               }
+               // return {
+               //     deliverySn: obj.deliverySn,
+               //     sellerName: obj.sellerName,
+               //     orderSn: obj.orderSn,
+               //     express: `${obj.expressName}\n${obj.expressSn}`
+               // };
+               // const rows = [
+               //     ["v1", "v2", "v3", "v4"],
+               //     ["x1", "x2", "x3", "x4"]
+               //   ];
+
+               //   const tsv = rows.map(row => row.join('\t')).join('\n');
+               
+               //   console.log(tsv);
+               return `${obj.deliverySn}\t${obj.sellerName}\t${obj.orderSn}\t${obj.expressName} ${obj.expressSn}`;
+         } else {
+               failed += 1;
+               return '';
+         }
+      }).join('\n');
+      console.log(result)
+      return {failed, notFound, result}
+   } catch (error) {
+      console.log(error);
+      throw error;
+   }
+}
+
+function showLoading() {
+   loading = document.getElementById('loading');
+   loading.classList.remove("hide");
+}
+function stopLoading() {
+   loading = document.getElementById('loading');
+   loading.classList.add("hide");
+}
+
+function handleClick() {
+   if (!sessionStorage.getItem(sessionIdKey)) {
+      openModal();
+   }
+   showLoading();
+   notification.style.visibility = 'hidden';
+   const input = document.getElementById('userInput').value;
+   // const response = input ? `You entered: ${input}` : "Please enter something!";
+   DOIds = input.trim().split(' ');
+   console.log('length: ', DOIds.length);
+   getDOs(DOIds).then(res => {
+      const copyHolder = res?.result ? navigator.clipboard.writeText(res.result) : Promise.resolve();
+      return copyHolder.then(() => Promise.resolve({
+         failed: res.failed, 
+         notFound: res.notFound
+      }));
+   }).then(res => {
+      if (res.failed == 0 && res.notFound == 0) {
+         notification.textContent = 'Đã copy nội dung. Hãy dán nó vào sheet!';
+      } else {
+         notification.textContent = `${res.failed} mục thất bại, ${res.notFound} mục không tìm thấy.`;
+      }
+      notification.style.visibility = 'visible';
+      stopLoading();
+   })
+   .catch(err => {
+      console.log(err)
+   });
+}
+
+function login() {
+   
+}
+
+
+/*
+Modal
+*/
+function openModal() {
+   document.getElementById('sessionIdModal').style.display = "flex";
+}
+
+function closeModal() {
+   document.getElementById('sessionIdModal').style.display = "none";
+}
+
+function submitModal() {
+   const sessId = document.getElementById("sessionId").value.trim();
+   if (!sessId) {
+      alert("Vui lòng nhập vào.");
+      return;
+   }
+   sessionStorage.setItem(sessionIdKey, sessId);
+   closeModal();
 }

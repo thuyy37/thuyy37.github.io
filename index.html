@@ -86,12 +86,40 @@
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      min-width: 300px;
+      text-align: center;
+    }
+
+    .modal input {
+      padding: 0.5rem;
+      width: 80%;
+      margin-top: 1rem;
+    }
+
+    .modal button {
+      margin: 1rem 0.5rem 0 0.5rem;
+    }
   </style>
   <script type="text/javascript" src="main.js"></script>
 </head>
 <body>
   <div class="container">
-    <h1 class="title">🛠️ Công cụ</h1>
+    <h1 class="title">🛠️ Công cụ của tui</h1>
     <div class="card">
       <h2>Kiểm tra đơn hàng xuất kho</h2>
       <p>Gõ danh sách các đơn cần kiểm tra vào bên dưới. Mỗi đơn cách nhau bằng dấu cách.</p>
@@ -99,6 +127,16 @@
       <input id="userInput" class="input" type="text" placeholder="Nhập đơn hàng...">
       <button class="button" onclick="handleClick()">Kiểm tra</button>
       <div id="notification"></div>
+      <button class="login" onclick="login()">Login</button>
+    </div>
+  </div>
+  <div class="modal" id="sessionIdModal">
+    <div class="modal-content">
+      <h2>Nhập session id</h2>
+      <input type="text" id="sessionId" placeholder="Nhập session id nha..." />
+      <br/>
+      <button onclick="submitModal()">OK</button>
+      <button onclick="closeModal()">Huỷ</button>
     </div>
   </div>
   <div id="loading" class="hide">
@@ -109,30 +147,7 @@
   </div>
 
   <script>
-    function handleClick() {
-        notification.style.visibility = 'hidden';
-        loading = document.getElementById('loading');
-        loading.classList.remove("hide");
-        const input = document.getElementById('userInput').value;
-        // const response = input ? `You entered: ${input}` : "Please enter something!";
-        DOIds = input.trim().split(' ');
-        console.log('length: ', DOIds.length);
-        getDOs(DOIds).then(res => {
-            const copyHolder = res.result ? navigator.clipboard.writeText(res.result) : Promise.resolve();
-            return copyHolder.then(() => Promise.resolve({
-                failed: res.failed, 
-                notFound: res.notFound
-            }));
-        }).then(res => {
-            if (res.failed == 0 && res.notFound == 0) {
-                notification.textContent = 'Đã copy nội dung. Hãy dán nó vào sheet!';
-            } else {
-                notification.textContent = `${res.failed} mục thất bại, ${res.notFound} mục không tìm thấy.`;
-            }
-            notification.style.visibility = 'visible';
-            loading.classList.add("hide");
-        });
-    }
+    
   </script>
 </body>
 </html>
