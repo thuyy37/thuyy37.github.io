@@ -127,7 +127,6 @@
       <input id="userInput" class="input" type="text" placeholder="Nhập đơn hàng...">
       <button class="button" onclick="handleClick()">Kiểm tra</button>
       <div id="notification"></div>
-      <button class="login" onclick="login()">Login</button>
     </div>
   </div>
   <div class="modal" id="sessionIdModal">
@@ -148,6 +147,61 @@
 
   <script>
     
+function handleClick() {
+   if (!sessionStorage.getItem(sessionIdKey)) {
+      openModal();
+   }
+   showLoading();
+   notification.style.visibility = 'hidden';
+   const input = document.getElementById('userInput').value;
+   // const response = input ? `You entered: ${input}` : "Please enter something!";
+   DOIds = input.trim().split(' ');
+   console.log('length: ', DOIds.length);
+   getDOs(DOIds).then(res => {
+      const copyHolder = res?.result ? navigator.clipboard.writeText(res.result) : Promise.resolve();
+      return copyHolder.then(() => Promise.resolve({
+         failed: res.failed, 
+         notFound: res.notFound
+      }));
+   }).then(res => {
+      if (res.failed == 0 && res.notFound == 0) {
+         notification.textContent = 'Đã copy nội dung. Hãy dán nó vào sheet!';
+      } else {
+         notification.textContent = `${res.failed} mục thất bại, ${res.notFound} mục không tìm thấy.`;
+      }
+      notification.style.visibility = 'visible';
+      stopLoading();
+   })
+   .catch(err => {
+      console.log(err)
+   });
+}
+
+function login() {
+   
+}
+
+
+/*
+Modal
+*/
+function openModal() {
+   document.getElementById('sessionIdModal').style.display = "flex";
+}
+
+function closeModal() {
+   document.getElementById('sessionIdModal').style.display = "none";
+}
+
+function submitModal() {
+   const sessId = document.getElementById("sessionId").value.trim();
+   if (!sessId) {
+      alert("Vui lòng nhập vào.");
+      return;
+   }
+   sessionStorage.setItem(sessionIdKey, sessId);
+   closeModal();
+}
   </script>
 </body>
 </html>
