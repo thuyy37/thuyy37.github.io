@@ -3,8 +3,21 @@ const oaSignKey = 'OA-Sign',
 const sessionIdKey = 'sessionId';
 
 document.getElementById('sessionIdSetter').addEventListener('click', () => {
-   openModal();
+   openModal('sessionIdModal');
 });
+document.getElementById('sessionIdSubmit').addEventListener('click', () => {
+   submitSessionIdModal();
+});
+document.getElementById('sessionIdCancel').addEventListener('click', () => {
+   closeModal('sessionIdModal');
+});
+document.getElementById('orders').addEventListener('keydown', function (event) {
+   if (event.key === 'Enter') {
+      checkOrders();
+      event.preventDefault();
+   }
+ });
+
 
 function calcHash() {
     let _0xe9e1 = [
@@ -135,7 +148,7 @@ function getDO(DO) {
       return res.json();
    })
    .catch(err => {
-      console.error("Failed to fetch: ", err);
+      console.error(err);
       throw err;
    });
 };
@@ -180,28 +193,16 @@ async function getDOs(DOs) {
       console.log(result)
       return {failed, notFound, result}
    } catch (error) {
-      console.log(error);
       throw error;
    }
 }
 
-function showLoading() {
-   loading = document.getElementById('loading');
-   loading.classList.remove("hide");
-}
-function stopLoading() {
-   loading = document.getElementById('loading');
-   loading.classList.add("hide");
-}
-
-function handleClick() {
+function checkOrders() {
    if (!sessionStorage.getItem(sessionIdKey)) {
       openModal();
    }
    showLoading();
-   notification.style.visibility = 'hidden';
-   const input = document.getElementById('userInput').value;
-   // const response = input ? `You entered: ${input}` : "Please enter something!";
+   const input = document.getElementById('orders').value;
    DOIds = input.trim().split(' ');
    console.log('length: ', DOIds.length);
    getDOs(DOIds).then(res => {
@@ -212,36 +213,102 @@ function handleClick() {
       }));
    }).then(res => {
       if (res.failed == 0 && res.notFound == 0) {
-         notification.textContent = 'Đã copy nội dung. Hãy dán nó vào sheet!';
+         showSuccess('Đã copy nội dung. Hãy dán nó vào sheet!');
       } else {
-         notification.textContent = `${res.failed} mục thất bại, ${res.notFound} mục không tìm thấy.`;
+         const level = res.failed > 0 ? showError : showWarning;
+         level(`${res.failed} mục thất bại, ${res.notFound} mục không tìm thấy.`);
       }
-      notification.style.visibility = 'visible';
       stopLoading();
    })
    .catch(err => {
-      console.log(err)
+      showError(err.message);
+      stopLoading();
    });
 }
 
+/*
+Loading
+*/
+function showLoading() {
+   loading = document.getElementById('loading');
+   loading.classList.remove("hide");
+}
+function stopLoading() {
+   loading = document.getElementById('loading');
+   loading.classList.add("hide");
+}
 
 /*
 Modal
 */
-function openModal() {
-   document.getElementById('sessionIdModal').style.display = "flex";
+function openModal(id) {
+   document.getElementById(id).style.display = "flex";
 }
 
-function closeModal() {
-   document.getElementById('sessionIdModal').style.display = "none";
+function closeModal(id) {
+   document.getElementById(id).style.display = "none";
 }
 
-function submitModal() {
+function submitSessionIdModal() {
    const sessId = document.getElementById("sessionId").value.trim();
    if (!sessId) {
-      alert("Vui lòng nhập vào.");
+      showError("Vui lòng nhập vào");
       return;
    }
    sessionStorage.setItem(sessionIdKey, sessId);
-   closeModal();
+   closeModal('sessionIdModal');
+   showSuccess('Đã lưu session. 謝謝');
 }
+
+/*
+Notification
+*/
+function showNotification(message, type) {
+   const container = document.getElementById('notificationContainer');
+
+   const notification = document.createElement('div');
+   notification.classList.add('notification', type);
+   notification.innerHTML = `
+     <span>${message}</span>
+     <button class="close-btn" onclick="closeNotification(this.parentElement)">x</button>
+   `;
+
+   container.appendChild(notification);
+
+   setTimeout(() => {
+     closeNotification(notification);
+   }, 5000);
+}
+
+function showSuccess(message) {
+   showNotification(message, 'success');
+}
+
+function showWarning(message) {
+   showNotification(message, 'warning');
+}
+
+function showError(message) {
+   showNotification(message, 'error');
+}
+
+function closeNotification(notificationElement) {
+   notificationElement.style.opacity = '0';
+   setTimeout(() => {
+      notificationElement.remove();
+   }, 300);
+}
+
+
+// Generate floating hearts
+function createHeart() {
+   const heart = document.createElement('div');
+   heart.className = 'heart';
+   heart.style.left = Math.random() * 100 + 'vw';
+   heart.style.animationDuration = (3 + Math.random() * 3) + 's';
+   document.body.appendChild(heart);
+
+   setTimeout(() => heart.remove(), 6000);
+ }
+
+ setInterval(createHeart, 1000);
