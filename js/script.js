@@ -66,8 +66,40 @@ const wait = ms => new Promise((resolve) => {
    setTimeout(() => resolve(), ms);
 });
 
+///
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+function getTime() {
+   // Get the current date
+   const now = new Date();
+   
+   // Start time of yesterday (midnight)
+   const startOfYesterday = new Date(now);
+   startOfYesterday.setDate(now.getDate() - 1);
+   startOfYesterday.setHours(0, 0, 0, 0);
+   
+   // End time of today (one millisecond before midnight)
+   const endOfToday = new Date(now);
+   endOfToday.setHours(23, 59, 59, 999);
+   
+   const start = formatDate(startOfYesterday));
+   const end = formatDate(endOfToday));
+   return {start, end}
+}
+
+
 function getDO(DO) {
-   params = `{"timeType":"audit_time","searchType":"orderInfo","search":"${DO}","platformStatus":"","expressName":"","prompt":"","logisticCompanyId":"","kinds":"=","kindsNum":"","goods":"=","deliverySn":"","goodsNum":"","sellerId":"","distribution":"","total_items":1,"page":1,"limit":20,"platformContain":"in","promptContain":"in","markContain":"in","repositoryContain":"in","repositoryId":[],"warehouseId":"20","start":"2025-03-07 00:00:00","end":"2025-04-07 23:59:59"}`
+   const time = getTime();
+   params = `{"timeType":"audit_time","searchType":"orderInfo","search":"${DO}","platformStatus":"","expressName":"","prompt":"","logisticCompanyId":"","kinds":"=","kindsNum":"","goods":"=","deliverySn":"","goodsNum":"","sellerId":"","distribution":"","total_items":1,"page":1,"limit":20,"platformContain":"in","promptContain":"in","markContain":"in","repositoryContain":"in","repositoryId":[],"warehouseId":"20","start":"${time.start}","end":"${time.end}"}`
    const {deviceId, timeStamp, sessionId} = prepareOASign('wms.deliveryOrder.listByWarehouseId', params);
    data = `api=wms.deliveryOrder.listByWarehouseId&version=1.0&timestamp=${timeStamp}&params=${encodeURIComponent(params)}&`
    api = 'https://wms-api.flashfulfillment.vn/?api=wms.deliveryOrder.listByWarehouseId';
