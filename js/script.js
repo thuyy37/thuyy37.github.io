@@ -11,13 +11,15 @@ document.getElementById('sessionIdSubmit').addEventListener('click', () => {
 document.getElementById('sessionIdCancel').addEventListener('click', () => {
    closeModal('sessionIdModal');
 });
+document.getElementById('check-orders-btn').addEventListener('click', () => {
+   checkOrders();
+});
 document.getElementById('orders').addEventListener('keydown', function (event) {
    if (event.key === 'Enter') {
       checkOrders();
       event.preventDefault();
    }
- });
-
+});
 
 function calcHash() {
     let _0xe9e1 = [
@@ -79,16 +81,15 @@ const wait = ms => new Promise((resolve) => {
    setTimeout(() => resolve(), ms);
 });
 
-///
 function formatDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-    
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+   const year = date.getFullYear();
+   const month = String(date.getMonth() + 1).padStart(2, '0');
+   const day = String(date.getDate()).padStart(2, '0');
+   const hours = String(date.getHours()).padStart(2, '0');
+   const minutes = String(date.getMinutes()).padStart(2, '0');
+   const seconds = String(date.getSeconds()).padStart(2, '0');
+   
+   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
 function getTime() {
@@ -108,7 +109,6 @@ function getTime() {
    const end = formatDate(endOfToday);
    return {start, end}
 }
-
 
 function getDO(DO) {
    const time = getTime();
@@ -198,14 +198,17 @@ async function getDOs(DOs) {
 }
 
 function checkOrders() {
+   const orders = document.getElementById('orders').value.trim();
+   if (!orders) {
+      showError("Vui lòng nhập đơn hàng.");
+      return;
+   }
    if (!sessionStorage.getItem(sessionIdKey)) {
-      openModal();
+      openModal('sessionIdModal');
+      return;
    }
    showLoading();
-   const input = document.getElementById('orders').value;
-   DOIds = input.trim().split(' ');
-   console.log('length: ', DOIds.length);
-   getDOs(DOIds).then(res => {
+   getDOs(orders.split(' ')).then(res => {
       const copyHolder = res?.result ? navigator.clipboard.writeText(res.result) : Promise.resolve();
       return copyHolder.then(() => Promise.resolve({
          failed: res.failed, 
