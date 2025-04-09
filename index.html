@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thuy Thanh</title>
+  <title>Heo Con</title>
   <link rel="stylesheet" href="css/style.css" type="text/css">
+  <link rel="icon" type="image/x-icon" href="img/favicon.ico">
 </head>
 <body>
   <div class="top-bar">
     <div class="left">
       <img class="logo" src="img/images.jpeg" />
-      <div class="name">Heo con</div>
+      <div class="name">Heo Con</div>
     </div>
     <div class="tools">
-      <button id="sessionIdSetter" class="button">Đặt session id</button>
+      <button id="sessionIdSetter" class="button">Cập nhật session</button>
     </div>
   </div>
   <div class="container">
@@ -22,8 +23,10 @@
       <h2>Kiểm tra đơn hàng xuất kho</h2>
       <p>Gõ danh sách các đơn cần kiểm tra vào bên dưới. Mỗi đơn cách nhau bằng dấu cách.</p>
       <p>Mẹo: Copy nhiều mã đơn hàng trên sheet và dán vào đây.</p>
-      <input id="userInput" class="input" type="text" placeholder="Nhập đơn hàng...">
-      <button class="button" onclick="handleClick()">Kiểm tra</button>
+      <textarea id="orders" class="input" type="text" placeholder="Nhập đơn hàng..."></textarea>
+      <div>
+         <button class="button" onclick="checkOrders()">Kiểm tra</button>
+      </div>
       <div id="notification"></div>
     </div>
   </div>
@@ -33,8 +36,8 @@
       <h2>Nhập session id</h2>
       <input type="text" id="sessionId" placeholder="Nhập session id nha..." />
       <br/>
-      <button class="button" onclick="submitModal()">OK</button>
-      <button class="button" onclick="closeModal()">Huỷ</button>
+      <button id="sessionIdSubmit" class="button">OK</button>
+      <button id="sessionIdCancel" class="button">Huỷ</button>
     </div>
   </div>
 
@@ -44,6 +47,8 @@
         <div class="msg">Chờ xíu ^_^</div> 
     </div>
   </div>
+
+  <div class="notification-container" id="notificationContainer"></div>
 
   <script type="text/javascript" src="js/script.js"></script>
 </body>
