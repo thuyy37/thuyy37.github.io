@@ -91,8 +91,8 @@ function getTime() {
    const endOfToday = new Date(now);
    endOfToday.setHours(23, 59, 59, 999);
    
-   const start = formatDate(startOfYesterday));
-   const end = formatDate(endOfToday));
+   const start = formatDate(startOfYesterday);
+   const end = formatDate(endOfToday);
    return {start, end}
 }
 
