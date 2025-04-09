@@ -83,15 +83,15 @@ function getTime() {
    const now = new Date();
    
    // Start time of yesterday (midnight)
-   const startOfYesterday = new Date(now);
-   startOfYesterday.setDate(now.getDate() - 1);
-   startOfYesterday.setHours(0, 0, 0, 0);
+   const startOfLastMonth = new Date(now);
+   startOfLastMonth.setMonth(now.getMonth() - 1);
+   startOfLastMonth.setHours(0, 0, 0, 0);
    
    // End time of today (one millisecond before midnight)
    const endOfToday = new Date(now);
    endOfToday.setHours(23, 59, 59, 999);
    
-   const start = formatDate(startOfYesterday);
+   const start = formatDate(startOfLastMonth);
    const end = formatDate(endOfToday);
    return {start, end}
 }
