@@ -157,9 +157,9 @@ async function getDOs(DOs, start, end) {
       console.log('Requests fulfiled: ', DOs.length);
       let failed = 0, notFound = 0;
       const result = promises.map(item => {
-         console.log(item)
+         console.log('item', item)
          if (!item.success) {
-            if (item.errorCode == 'AD.SessionNotExists') {
+            if (item.errorCode == 'AD.SessionNotExists' || item.errorMessage == 'YOUR_ACCOUNT_IS_ALREADY_LOGGED_IN_FROM_ANOTHER_LOCATION') {
                console.log('22222222222222')
                throw new Error("Session expired", {cause: {code: "SESSIONEXPIRED", message: "Session expired" }});
             }
@@ -199,64 +199,92 @@ async function getDOs(DOs, start, end) {
 
 function getDODetails(DO, start, end) {
    return getDO(DO, start, end).then(DOInfo => {
-      if (DOInfo.success) {
-         const id = DOInfo.data.items[0].id;
-   // const id = '12900876';
-         const params = `{"id":"${id}"}`
-         let {deviceId, timeStamp, sessionId} = prepareOASign('wms.deliveryOrder.detail', params);
-         const data = `api=wms.deliveryOrder.detail&version=1.0&timestamp=${timeStamp}&params=${encodeURIComponent(params)}&`
-         const api = 'https://wms-api.flashfulfillment.vn/?api=wms.deliveryOrder.detail';
-         headers = {
-            'Accept': 'application/json, text/plain, */*',
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'OA-App-Key': '1001520',
-            'OA-App-Market-ID': '678',
-            'OA-App-Version': '1.0',
-            'OA-Device-Id': deviceId,
-            'OA-Session-Id': sessionId,
-            'OA-Sign': sessionStorage.getItem(oaSignKey)
-         };
-         const params1 = `{"deliveryOrderId":"${id}","lang":"en"}`;
-         ({deviceId, timeStamp, sessionId} = prepareOASign('wms.expressRoutes.listByDeliveryOrderId', params1));
-         const data1 = `api=wms.expressRoutes.listByDeliveryOrderId&version=1.0&timestamp=${timeStamp}&params=${encodeURIComponent(params1)}&`
-         const api1 = 'https://wms-api.flashfulfillment.vn/?api=wms.expressRoutes.listByDeliveryOrderId';
-         headers1 = {
-            'Accept': 'application/json, text/plain, */*',
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'OA-App-Key': '1001520',
-            'OA-App-Market-ID': '678',
-            'OA-App-Version': '1.0',
-            'OA-Device-Id': deviceId,
-            'OA-Session-Id': sessionId,
-            'OA-Sign': sessionStorage.getItem(oaSignKey)
-         };
-         return Promise.all([
-            fetch(api, {
-               method: 'POST',
-               headers: headers,
-               body: data
-            })
-            .then(res => {
-               return res.json();
-            })
-            .catch(err => {
-               console.error(err);
-               throw err;
-            }),
-            fetch(api1, {
-               method: 'POST',
-               headers: headers1,
-               body: data1
-            })
-            .then(res => {
-               return res.json();
-            })
-            .catch(err => {
-               console.error(err);
-               throw err;
-            }),
-         ]);
+      if (!DOInfo.success) {
+         if (DOInfo.errorCode == 'AD.SessionNotExists' || DOInfo.errorMessage == 'YOUR_ACCOUNT_IS_ALREADY_LOGGED_IN_FROM_ANOTHER_LOCATION') {
+            throw new Error("Session expired", {cause: {code: "SESSIONEXPIRED", message: "Session expired" }});
+         }
       }
+      const id = DOInfo.data.items[0].id;
+      const params = `{"id":"${id}"}`
+      let {deviceId, timeStamp, sessionId} = prepareOASign('wms.deliveryOrder.detail', params);
+      const data = `api=wms.deliveryOrder.detail&version=1.0&timestamp=${timeStamp}&params=${encodeURIComponent(params)}&`
+      const api = 'https://wms-api.flashfulfillment.vn/?api=wms.deliveryOrder.detail';
+      headers = {
+         'Accept': 'application/json, text/plain, */*',
+         'Content-Type': 'application/x-www-form-urlencoded',
+         'OA-App-Key': '1001520',
+         'OA-App-Market-ID': '678',
+         'OA-App-Version': '1.0',
+         'OA-Device-Id': deviceId,
+         'OA-Session-Id': sessionId,
+         'OA-Sign': sessionStorage.getItem(oaSignKey)
+      };
+      const params1 = `{"deliveryOrderId":"${id}","lang":"en"}`;
+      ({deviceId, timeStamp, sessionId} = prepareOASign('wms.expressRoutes.listByDeliveryOrderId', params1));
+      const data1 = `api=wms.expressRoutes.listByDeliveryOrderId&version=1.0&timestamp=${timeStamp}&params=${encodeURIComponent(params1)}&`
+      const api1 = 'https://wms-api.flashfulfillment.vn/?api=wms.expressRoutes.listByDeliveryOrderId';
+      headers1 = {
+         'Accept': 'application/json, text/plain, */*',
+         'Content-Type': 'application/x-www-form-urlencoded',
+         'OA-App-Key': '1001520',
+         'OA-App-Market-ID': '678',
+         'OA-App-Version': '1.0',
+         'OA-Device-Id': deviceId,
+         'OA-Session-Id': sessionId,
+         'OA-Sign': sessionStorage.getItem(oaSignKey)
+      };
+      const params2 = `{"deliveryOrderId":"${id}"}`;
+      ({deviceId, timeStamp, sessionId} = prepareOASign('wms.occupyInventoryLog.listByDeliveryOrderId', params2));
+      const data2 = `api=wms.occupyInventoryLog.listByDeliveryOrderId&version=1.0&timestamp=${timeStamp}&params=${encodeURIComponent(params2)}&`
+      const api2 = 'https://wms-api.flashfulfillment.vn/?api=wms.occupyInventoryLog.listByDeliveryOrderId';
+      headers2 = {
+         'Accept': 'application/json, text/plain, */*',
+         'Content-Type': 'application/x-www-form-urlencoded',
+         'OA-App-Key': '1001520',
+         'OA-App-Market-ID': '678',
+         'OA-App-Version': '1.0',
+         'OA-Device-Id': deviceId,
+         'OA-Session-Id': sessionId,
+         'OA-Sign': sessionStorage.getItem(oaSignKey)
+      };
+      return Promise.all([
+         fetch(api, {
+            method: 'POST',
+            headers: headers,
+            body: data
+         })
+         .then(res => {
+            return res.json();
+         })
+         .catch(err => {
+            console.error(err);
+            throw err;
+         }),
+         fetch(api1, {
+            method: 'POST',
+            headers: headers1,
+            body: data1
+         })
+         .then(res => {
+            return res.json();
+         })
+         .catch(err => {
+            console.error(err);
+            throw err;
+         }),
+         fetch(api2, {
+            method: 'POST',
+            headers: headers2,
+            body: data2
+         })
+         .then(res => {
+            return res.json();
+         })
+         .catch(err => {
+            console.error(err);
+            throw err;
+         }),
+      ]);
    });
 };
 
@@ -268,21 +296,22 @@ async function getDOsDetails(DOs, start, end) {
          promises.push(rs);
          await new Promise(resolve => setTimeout(resolve, 200));
       };
-      console.log('Requests fulfiled: ', DOs.length);
+      console.log('Requests fulfiled: ', promises.length);
       let failed = 0, notFound = 0;
       const result = promises.map(item => {
-         console.log('item', item)
+         console.log('item22222', item)
          doDetails = item[0];
          routeDetails = item[1];
-         if (!doDetails.success || !routeDetails.success) {
+         occupyInventoryLog = item[2]
+         if (!doDetails.success || !routeDetails.success || !occupyInventoryLog.success) {
             if (item.errorCode == 'AD.SessionNotExists') {
-               console.log('22222222222222')
                throw new Error("Session expired", {cause: {code: "SESSIONEXPIRED", message: "Session expired" }});
             }
          }
-         if (doDetails && doDetails.data && routeDetails) {
-               obj = doDetails.data;
-               routeDetail = routeDetails.data[0];
+         if (doDetails.data && routeDetails.data && occupyInventoryLog.data) {
+            obj = doDetails.data;
+            routeDetail = routeDetails.data[0];
+            occupyInventoryLog = occupyInventoryLog.data[0];
                if (!obj) {
                   notFound += 1;
                   return '';
@@ -290,7 +319,7 @@ async function getDOsDetails(DOs, start, end) {
                const toCm = (mm) => {
                   return parseInt(mm)/10;
                }
-               return `${obj.deliverySn}\t${obj.sellerName}\t${obj.orderSn}\t${obj.consigneeName}\t${obj.phoneNumber}\t${obj.consigneeAddress}\t${routeDetail.weight}\t${toCm(routeDetail.length)}\t${toCm(routeDetail.width)}\t${toCm(routeDetail.height)}`;
+               return `${obj.consigneeName}\t'${obj.phoneNumber}\t${obj.consigneeAddress}\t${routeDetail.codAmount}\t${routeDetail.weight}\t${toCm(routeDetail.length)}\t${toCm(routeDetail.width)}\t${toCm(routeDetail.height)}\t${obj.deliverySn} - ${obj.sellerName}\t${occupyInventoryLog.goodsName}\t`;
          } else {
                failed += 1;
                return '';
