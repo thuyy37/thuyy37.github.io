@@ -1,0 +1,450 @@
+#date-time-picker {
+   --primary-color: #667eea;
+   --primary-color-dark: #5a67d8;
+   --primary-color-light: rgba(102, 126, 234, 0.1);
+   --text-color-primary: #333;
+   --text-color-secondary: #666;
+   --border-color: #e1e5e9;
+   --background-light: #f8f9fa;
+   --background-white: white;
+   --error-color: #e53e3e;
+   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+   padding: 20px;
+}
+
+#date-time-picker, #date-time-picker * {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+}
+
+
+#date-time-picker.container {
+   max-width: 400px;
+   width: 100%;
+}
+
+#date-time-picker h1 {
+   text-align: center;
+   color: var(--text-color-primary);
+   margin-bottom: 30px;
+   font-weight: 300;
+   font-size: 2rem;
+}
+
+/* --- Toggle Switch --- */
+#date-time-picker .range-toggle {
+   display: flex;
+   align-items: center;
+   justify-content: right;
+   margin-bottom: 10px;
+   gap: 10px;
+}
+
+#date-time-picker .toggle-switch {
+   position: relative;
+   width: 30px;
+   height: 18px;
+   background: #ddd;
+   border-radius: 15px;
+   cursor: pointer;
+   transition: background 0.3s ease;
+}
+
+#date-time-picker .toggle-switch.active {
+   background: var(--primary-color);
+}
+
+#date-time-picker .toggle-slider {
+   position: absolute;
+   top: 2px;
+   left: 2px;
+   width: 14px;
+   height: 14px;
+   background: var(--background-white);
+   border-radius: 50%;
+   transition: transform 0.3s ease;
+   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+#date-time-picker .toggle-switch.active .toggle-slider {
+   transform: translateX(12px);
+}
+
+#date-time-picker .toggle-label {
+   font-size: 14px;
+   color: var(--text-color-secondary);
+   font-weight: 500;
+}
+
+/* --- Input --- */
+#date-time-picker .datetime-picker {
+   position: relative;
+   width: 100%;
+}
+
+#date-time-picker .datetime-input {
+   width: 100%;
+   padding: 15px 20px;
+   border: 2px solid var(--border-color);
+   border-radius: 12px;
+   font-size: 16px;
+   background: var(--background-white);
+   cursor: pointer;
+   transition: all 0.3s ease;
+   outline: none;
+   color: var(--text-color-primary);
+}
+
+#date-time-picker .datetime-input:focus, #date-time-picker .datetime-input.focus {
+   border-color: var(--primary-color);
+   box-shadow: 0 0 0 3px var(--primary-color-light);
+   cursor: text;
+}
+
+#date-time-picker .datetime-input.invalid {
+      border-color: var(--error-color);
+      box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+}
+
+#date-time-picker .datetime-input::placeholder {
+   color: #999;
+}
+
+/* --- Picker Dropdown --- */
+#date-time-picker .picker-dropdown {
+   position: absolute;
+   top: calc(100% + 8px);
+   left: 0;
+   right: 0;
+   background: var(--background-white);
+   border: 1px solid var(--border-color);
+   border-radius: 12px;
+   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+   z-index: 1000;
+   overflow: hidden;
+   display: none;
+   flex-direction: column;
+   transform-origin: top center;
+}
+
+#date-time-picker .picker-dropdown.active {
+   display: flex;
+   animation: fadeInScale 0.2s ease-out;
+}
+
+@keyframes fadeInScale {
+   from {
+         opacity: 0;
+         transform: scale(0.95);
+   }
+   to {
+         opacity: 1;
+         transform: scale(1);
+   }
+}
+
+#date-time-picker .picker-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 10px 15px;
+   background: var(--background-light);
+   border-bottom: 1px solid var(--border-color);
+}
+
+#date-time-picker .nav-btn {
+   background: none;
+   border: none;
+   font-size: 20px;
+   cursor: pointer;
+   padding: 8px;
+   border-radius: 50%;
+   transition: background-color 0.2s;
+   color: var(--primary-color);
+   width: 36px;
+   height: 36px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+#date-time-picker .nav-btn:hover {
+   background: var(--primary-color-light);
+}
+
+#date-time-picker .month-year {
+   font-weight: 600;
+   color: var(--text-color-primary);
+   font-size: 16px;
+   padding: 5px 10px;
+   border-radius: 8px;
+   cursor: pointer;
+   transition: background-color 0.2s;
+}
+
+#date-time-picker .month-year:hover {
+   background: var(--primary-color-light);
+}
+
+/* --- Calendar --- */
+#date-time-picker .calendar-view {
+   padding: 10px;
+}
+
+#date-time-picker .calendar-grid {
+   display: grid;
+   grid-template-columns: repeat(7, 1fr);
+   gap: 2px;
+}
+
+#date-time-picker .day-header, #date-time-picker .day-cell {
+   text-align: center;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border-radius: 50%;
+}
+
+#date-time-picker .day-header {
+   padding: 10px 0;
+   font-weight: 600;
+   font-size: 12px;
+   color: var(--text-color-secondary);
+}
+
+#date-time-picker .day-cell {
+   height: 40px;
+   width: 40px;
+   margin: auto;
+   cursor: pointer;
+   transition: all 0.2s;
+   font-size: 14px;
+   border: 2px solid transparent;
+}
+
+#date-time-picker .day-cell:focus {
+   outline: none;
+   border-color: var(--primary-color);
+}
+
+#date-time-picker .day-cell:hover:not(.selected):not(.range-start):not(.range-end) {
+   background: var(--primary-color-light);
+}
+
+#date-time-picker .day-cell.other-month {
+   color: #ccc;
+   cursor: not-allowed;
+}
+
+#date-time-picker .day-cell.selected, #date-time-picker .day-cell.range-start, #date-time-picker .day-cell.range-end {
+   background: var(--primary-color);
+   color: var(--background-white);
+}
+
+#date-time-picker .day-cell.range-start { border-radius: 50% 0 0 50%; }
+#date-time-picker .day-cell.range-end { border-radius: 0 50% 50% 0; }
+#date-time-picker .day-cell.range-start.range-end { border-radius: 50%; } /* Single day in range */
+
+#date-time-picker .day-cell.in-range {
+   background: var(--primary-color-light);
+   color: var(--text-color-primary);
+   border-radius: 0;
+}
+
+#date-time-picker .day-cell.today {
+   position: relative;
+}
+
+#date-time-picker .day-cell.today::after {
+   content: '';
+   position: absolute;
+   bottom: 4px;
+   left: 50%;
+   transform: translateX(-50%);
+   width: 5px;
+   height: 5px;
+   border-radius: 50%;
+   background-color: var(--primary-color);
+}
+
+#date-time-picker .day-cell.today.selected::after,
+#date-time-picker .day-cell.today.range-start::after,
+#date-time-picker .day-cell.today.range-end::after {
+   background-color: var(--background-white);
+}
+
+/* --- Year/Month Selector --- */
+#date-time-picker .month-year-view {
+   display: none; /* Initially hidden */
+   padding: 10px;
+   animation: fadeInScale 0.2s ease-out;
+}
+
+#date-time-picker .year-grid, #date-time-picker .month-grid {
+   display: grid;
+   grid-template-columns: repeat(4, 1fr);
+   gap: 5px;
+}
+
+#date-time-picker .year-grid {
+   margin-bottom: 10px;
+}
+
+#date-time-picker .year-nav {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 10px;
+}
+
+#date-time-picker .year-val {
+   font-weight: 600;
+}
+
+#date-time-picker .year-cell, #date-time-picker .month-cell {
+   padding: 10px;
+   text-align: center;
+   cursor: pointer;
+   border-radius: 8px;
+   transition: background-color 0.2s;
+   font-size: 14px;
+}
+
+#date-time-picker .year-cell:hover, #date-time-picker .month-cell:hover {
+   background-color: var(--primary-color-light);
+}
+
+#date-time-picker .year-cell.selected, #date-time-picker .month-cell.selected {
+   background-color: var(--primary-color);
+   color: var(--background-white);
+}
+
+/* --- Time Section --- */
+#date-time-picker .time-section {
+   padding: 15px 20px;
+   border-top: 1px solid var(--border-color);
+   background: var(--background-light);
+}
+
+#date-time-picker .time-inputs {
+   display: flex;
+   gap: 10px;
+   align-items: center;
+   justify-content: center;
+   margin-bottom: 15px;
+}
+
+#date-time-picker .time-input {
+   width: 60px;
+   padding: 8px;
+   border: 1px solid #ddd;
+   border-radius: 6px;
+   text-align: center;
+   font-size: 16px;
+   outline: none;
+   -moz-appearance: textfield;
+}
+
+#date-time-picker .time-input::-webkit-outer-spin-button,
+#date-time-picker .time-input::-webkit-inner-spin-button {
+   -webkit-appearance: none;
+   margin: 0;
+}
+
+#date-time-picker .time-input:focus {
+   border-color: var(--primary-color);
+}
+
+#date-time-picker .time-separator {
+   font-size: 18px;
+   font-weight: bold;
+   color: var(--text-color-secondary);
+}
+
+#date-time-picker .time-label {
+   font-size: 12px;
+   color: var(--text-color-secondary);
+   font-weight: 500;
+   margin-bottom: 5px;
+}
+
+#date-time-picker .range-times {
+   display: none;
+   gap: 20px;
+}
+
+#date-time-picker .range-times.active {
+   display: flex;
+}
+
+#date-time-picker .time-group {
+   flex: 1;
+   text-align: center;
+}
+
+/* --- Actions --- */
+#date-time-picker .picker-actions {
+   display: flex;
+   gap: 10px;
+   padding: 15px 20px;
+   border-top: 1px solid var(--border-color);
+}
+
+#date-time-picker .btn {
+   padding: 10px 20px;
+   border: none;
+   border-radius: 8px;
+   cursor: pointer;
+   font-size: 14px;
+   font-weight: 500;
+   transition: all 0.2s;
+   flex: 1;
+}
+
+#date-time-picker .btn-primary {
+   background: var(--primary-color);
+   color: var(--background-white);
+}
+
+#date-time-picker .btn-primary:hover {
+   background: var(--primary-color-dark);
+}
+
+#date-time-picker .btn-secondary {
+   background: #e1e5e9;
+   color: var(--text-color-primary);
+}
+
+#date-time-picker .btn-secondary:hover {
+   background: #d1d5db;
+}
+
+/* --- Display --- */
+#date-time-picker .selected-datetime {
+   margin-top: 20px;
+   padding: 15px;
+   background: var(--background-light);
+   border-radius: 8px;
+   color: var(--text-color-primary);
+   font-size: 14px;
+   line-height: 1.6;
+}
+
+#date-time-picker .range-info {
+   margin-top: 10px;
+   padding: 10px;
+   background: var(--primary-color-light);
+   border-radius: 6px;
+   font-size: 12px;
+   color: var(--primary-color);
+   font-weight: 500;
+}
+
+@media (max-width: 480px) {
+   #date-time-picker.container { padding: 20px; }
+   #date-time-picker .range-times, #date-time-picker .picker-actions { flex-direction: column; }
+   #date-time-picker .time-inputs {
+         flex-direction: row; /* Keep time inputs horizontal */
+   }
+}
