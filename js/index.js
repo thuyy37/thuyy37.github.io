@@ -4,14 +4,13 @@ addEventListener("load", () => {
    }
 });
 
-document.getElementById('check-orders-btn').addEventListener('click', () => {
-   checkOrders();
-});
-document.getElementById('orders').addEventListener('keydown', function (event) {
-   if (event.key === 'Enter') {
-      checkOrders();
-      event.preventDefault();
-   }
+document.querySelectorAll('.card .orders').forEach(el => {
+   el.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter') {
+         el.parentElement.querySelector('.submit-button').click();
+         event.preventDefault();
+      }
+   });
 });
 datetimeInput = document.getElementById('datetimeInput');
 
@@ -19,8 +18,8 @@ function isSessionValid() {
    return !!sessionStorage.getItem(sessionIdKey);
 }
 
-function parseInput() {
-   const parsedRows = document.getElementById('orders').value.trim()
+function parseInput(inputElementPath) {
+   const parsedRows = document.querySelector(inputElementPath).value.trim()
       .split('\n').map(row => row.split('\t'));
    const maxCols = Math.max(0, ...parsedRows.map(row => row.length));
    const columns = Array.from({ length: maxCols }, (_, i) =>
@@ -30,7 +29,7 @@ function parseInput() {
 }
 
 function checkOrders() {
-   const orders = parseInput();
+   const orders = parseInput('#do-checker .orders');
    if (!orders.length) {
       showError("Vui lòng nhập đơn hàng.");
       return;
@@ -66,15 +65,14 @@ function checkOrders() {
 }
 
 function getOrderDetails() {
-   const orders = parseInput();
+   const orders = parseInput('#self-collection-checker .orders');
+   console.log('orders', orders)
    if (!orders.length) {
       showError("Vui lòng nhập đơn hàng.");
       return;
    }
-   const start = datetimeInput.getAttribute('start');
-   const end = datetimeInput.getAttribute('end');
    showLoading();
-   getDOsDetails(orders, start, end).then(res => {
+   getDOsDetails(orders).then(res => {
       console.log(res)
       const copyHolder = res?.result ? navigator.clipboard.writeText(res.result) : Promise.resolve();
       return copyHolder.then(() => Promise.resolve({
