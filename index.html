@@ -1,138 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Tool Suite</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      background-color: #f9fafb;
-      margin: 0;
-      padding: 2rem;
-    }
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    .card {
-      background: white;
-      border-radius: 1rem;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .button {
-      background-color: #2563eb;
-      color: white;
-      border: none;
-      padding: 0.75rem 1.25rem;
-      font-size: 1rem;
-      border-radius: 0.5rem;
-      cursor: pointer;
-    }
-    .button:hover {
-      background-color: #1e40af;
-    }
-    .input {
-      width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.5rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 0.375rem;
-      font-size: 1rem;
-    }
-    #notification {
-        margin-top: 10px;
-        font-size: 20px;
-        color: green;
-        visibility: hidden;
-    }
-    #loading {
-        position: fixed; /* Position it fixed to the viewport */
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999; /* Make sure it's above all other content */
-        backdrop-filter: blur(5px); /* Apply blur effect to the background */
-    }
-    
-    #loading.hide {
-        display: none;
-    }
-
-    /* The spinner style */
-    .spinner {
-        border: 8px solid #f3f3f3; /* Light grey background */
-        border-top: 8px solid #3498db; /* Blue color for the top part */
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        animation: spin 1.5s linear infinite; /* Spin animation */
-    }
-    #loading .msg {
-        color: white;
-        margin-top: 10px;
-    }
-
-    /* Keyframe for spinning the spinner */
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-  </style>
-  <script type="text/javascript" src="main.js"></script>
+  <title>Heo Con</title>
+  <link rel="stylesheet" href="css/style.css" type="text/css">
+  <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+  <link rel="stylesheet" href="css/datePicker.css" type="text/css">
+  <script type="text/javascript" src="js/datePicker.js"></script>
+  <script type="text/javascript" src="js/api.js"></script>
 </head>
+
 <body>
+  <div class="top-bar">
+    <div class="left">
+      <img class="logo" src="img/images.jpeg" />
+      <div class="name">Heo Con</div>
+    </div>
+    <div class="tools">
+      <!-- <a href="test.html">testing page</a>
+      <button id="sessionIdSetter" class="button">Login</button> -->
+    </div>
+  </div>
   <div class="container">
-    <h1 class="title">🛠️ Công cụ</h1>
+    <h1 class="title">🛠️ Công cụ của tui</h1>
+
     <div class="card">
-      <h2>Kiểm tra đơn hàng xuất kho</h2>
-      <p>Gõ danh sách các đơn cần kiểm tra vào bên dưới. Mỗi đơn cách nhau bằng dấu cách.</p>
-      <p>Mẹo: Copy nhiều mã đơn hàng trên sheet và dán vào đây.</p>
-      <input id="userInput" class="input" type="text" placeholder="Nhập đơn hàng...">
-      <button class="button" onclick="handleClick()">Kiểm tra</button>
+      <h2 class="title">Kiểm tra đơn hàng xuất kho</h2>
+
+      <!-- start date time -->
+      <div class="container" id="date-time-picker">
+        <div class="range-toggle">
+          <div class="toggle-switch" id="rangeToggle">
+            <div class="toggle-slider"></div>
+          </div>
+          <span class="toggle-label">Khoảng thời gian</span>
+        </div>
+
+        <div class="datetime-picker">
+          <input type="text" class="datetime-input" placeholder="Chọn ngày giờ" id="datetimeInput">
+
+          <div class="picker-dropdown" id="pickerDropdown">
+            <div class="picker-header">
+              <button class="nav-btn" id="prevMonth">‹</button>
+              <div class="month-year" id="monthYear"></div>
+              <button class="nav-btn" id="nextMonth">›</button>
+            </div>
+
+            <div class="calendar-view" id="calendarView">
+              <div class="calendar-grid" id="calendar" role="grid" aria-labelledby="monthYear"></div>
+            </div>
+
+            <div class="month-year-view" id="monthYearView">
+              <div class="year-nav">
+                <button class="nav-btn" id="prevYearPage">‹</button>
+                <div class="year-val" id="yearGridHeader"></div>
+                <button class="nav-btn" id="nextYearPage">›</button>
+              </div>
+              <div class="year-grid" id="yearGrid"></div>
+              <div class="month-grid" id="monthGrid"></div>
+            </div>
+
+            <div class="time-section">
+              <div class="time-inputs" id="singleTime">
+                <input type="number" class="time-input" id="hours" min="0" max="23" value="12" aria-label="Hours">
+                <span class="time-separator">:</span>
+                <input type="number" class="time-input" id="minutes" min="0" max="59" value="00" aria-label="Minutes">
+              </div>
+
+              <div class="range-times" id="rangeTimes">
+                <div class="time-group">
+                  <div class="time-label">Giờ bắt đầu</div>
+                  <div class="time-inputs">
+                    <input type="number" class="time-input" id="startHours" min="0" max="23" value="00"
+                      aria-label="Start Hours">
+                    <span class="time-separator">:</span>
+                    <input type="number" class="time-input" id="startMinutes" min="0" max="59" value="00"
+                      aria-label="Start Minutes">
+                  </div>
+                </div>
+                <div class="time-group">
+                  <div class="time-label">Giờ kết thúc</div>
+                  <div class="time-inputs">
+                    <input type="number" class="time-input" id="endHours" min="0" max="23" value="23"
+                      aria-label="End Hours">
+                    <span class="time-separator">:</span>
+                    <input type="number" class="time-input" id="endMinutes" min="0" max="59" value="59"
+                      aria-label="End Minutes">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="picker-actions">
+              <button class="btn btn-secondary" id="todayBtn">Today</button>
+              <button class="btn btn-secondary" id="clearBtn">Clear</button>
+              <button class="btn btn-primary" id="confirmBtn">Confirm</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- end date time -->
+
+      <p class="manuals">Gõ danh sách các đơn cần kiểm tra vào bên dưới. Mỗi đơn cách nhau bằng dấu cách.</p>
+      <p class="tips">Mẹo: Copy nhiều mã đơn hàng trên sheet và dán vào đây.</p>
+      <textarea id="orders" class="input" type="text" placeholder="Nhập đơn hàng...">TTVN1015898242</textarea>
+      <div>
+        <button id="check-orders-btn" class="button">Kiểm tra</button>
+      </div>
       <div id="notification"></div>
     </div>
   </div>
-  <div id="loading" class="hide">
-    <div>
-        <div class="spinner"></div>
-        <div class="msg">Chờ xíu ^_^</div> 
+
+  <div class="modal" id="sessionIdModal">
+    <div class="modal-content">
+      <h2>Nhập session id</h2>
+      <input type="text" id="sessionId" placeholder="Nhập session id nha..." />
+      <br />
+      <button id="sessionIdSubmit" class="button">OK</button>
+      <button id="sessionIdCancel" class="button">Huỷ</button>
     </div>
   </div>
 
-  <script>
-    function handleClick() {
-        notification.style.visibility = 'hidden';
-        loading = document.getElementById('loading');
-        loading.classList.remove("hide");
-        const input = document.getElementById('userInput').value;
-        // const response = input ? `You entered: ${input}` : "Please enter something!";
-        DOIds = input.trim().split(' ');
-        console.log('length: ', DOIds.length);
-        getDOs(DOIds).then(res => {
-            const copyHolder = res.result ? navigator.clipboard.writeText(res.result) : Promise.resolve();
-            return copyHolder.then(() => Promise.resolve({
-                failed: res.failed, 
-                notFound: res.notFound
-            }));
-        }).then(res => {
-            if (res.failed == 0 && res.notFound == 0) {
-                notification.textContent = 'Đã copy nội dung. Hãy dán nó vào sheet!';
-            } else {
-                notification.textContent = `${res.failed} mục thất bại, ${res.notFound} mục không tìm thấy.`;
-            }
-            notification.style.visibility = 'visible';
-            loading.classList.add("hide");
-        });
-    }
-  </script>
+  <div id="loading" class="hide">
+    <div>
+      <div class="spinner"></div>
+      <div class="msg">Chờ xíu ^_^</div>
+    </div>
+  </div>
+
+  <div class="notification-container" id="notificationContainer"></div>
+
+  <script type="text/javascript" src="js/index.js"></script>
+
 </body>
+
 </html>
