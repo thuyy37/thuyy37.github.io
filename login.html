@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <link rel="stylesheet" href="css/login.css" type="text/css">
+    <script type="text/javascript" src="js/api.js"></script>
+    <script type="text/javascript" src="js/login.js"></script>
+</head>
+<body>
+    <div id="login-container">
+        <div class="login-header">
+            <img class="logo" src="img/images.jpeg"/>
+            <h1 class="login-title">Welcome Back</h1>
+            <p class="login-subtitle">Please sign in to your account</p>
+        </div>
+
+        <div class="input-group">
+            <input type="text" class="input-field" id="username" placeholder=" " required>
+            <label class="input-label">User Name</label>
+        </div>
+
+        <div class="input-group">
+            <input type="password" class="input-field" id="password" placeholder=" " required>
+            <label class="input-label">Password</label>
+        </div>
+
+        <div class="forgot-password">
+            <a href="#" onclick="handleForgotPassword()">Forgot Password?</a>
+        </div>
+
+        <button class="login-button" onclick="handleLogin()">
+            Sign In
+        </button>
+
+        <div class="divider">
+            <span>or</span>
+        </div>
+
+        <div class="signup-link">
+            Don't have an account? <a href="#" onclick="handleSignup()">Sign up</a>
+        </div>
+    </div>
+</body>
+</html>
