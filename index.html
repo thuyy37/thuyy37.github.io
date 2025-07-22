@@ -6,8 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Heo Con</title>
   <link rel="stylesheet" href="css/style.css" type="text/css">
+  <link rel="stylesheet" href="css/common.css" type="text/css">
   <link rel="icon" type="image/x-icon" href="img/favicon.ico">
   <link rel="stylesheet" href="css/datePicker.css" type="text/css">
+  <script type="text/javascript" src="js/common.js"></script>
   <script type="text/javascript" src="js/datePicker.js"></script>
   <script type="text/javascript" src="js/api.js"></script>
 </head>
@@ -25,9 +27,93 @@
   </div>
   <div class="container">
     <h1 class="title">🛠️ Công cụ của tui</h1>
-
+<!-- 
     <div class="card">
       <h2 class="title">Kiểm tra đơn hàng xuất kho</h2>
+
+      <div class="container" id="date-time-picker">
+        <div class="range-toggle">
+          <div class="toggle-switch" id="rangeToggle">
+            <div class="toggle-slider"></div>
+          </div>
+          <span class="toggle-label">Khoảng thời gian</span>
+        </div>
+
+        <div class="datetime-picker">
+          <input type="text" class="datetime-input" placeholder="Chọn ngày giờ" id="datetimeInput">
+
+          <div class="picker-dropdown" id="pickerDropdown">
+            <div class="picker-header">
+              <button class="nav-btn" id="prevMonth">‹</button>
+              <div class="month-year" id="monthYear"></div>
+              <button class="nav-btn" id="nextMonth">›</button>
+            </div>
+
+            <div class="calendar-view" id="calendarView">
+              <div class="calendar-grid" id="calendar" role="grid" aria-labelledby="monthYear"></div>
+            </div>
+
+            <div class="month-year-view" id="monthYearView">
+              <div class="year-nav">
+                <button class="nav-btn" id="prevYearPage">‹</button>
+                <div class="year-val" id="yearGridHeader"></div>
+                <button class="nav-btn" id="nextYearPage">›</button>
+              </div>
+              <div class="year-grid" id="yearGrid"></div>
+              <div class="month-grid" id="monthGrid"></div>
+            </div>
+
+            <div class="time-section">
+              <div class="time-inputs" id="singleTime">
+                <input type="number" class="time-input" id="hours" min="0" max="23" value="12" aria-label="Hours">
+                <span class="time-separator">:</span>
+                <input type="number" class="time-input" id="minutes" min="0" max="59" value="00" aria-label="Minutes">
+              </div>
+
+              <div class="range-times" id="rangeTimes">
+                <div class="time-group">
+                  <div class="time-label">Giờ bắt đầu</div>
+                  <div class="time-inputs">
+                    <input type="number" class="time-input" id="startHours" min="0" max="23" value="00"
+                      aria-label="Start Hours">
+                    <span class="time-separator">:</span>
+                    <input type="number" class="time-input" id="startMinutes" min="0" max="59" value="00"
+                      aria-label="Start Minutes">
+                  </div>
+                </div>
+                <div class="time-group">
+                  <div class="time-label">Giờ kết thúc</div>
+                  <div class="time-inputs">
+                    <input type="number" class="time-input" id="endHours" min="0" max="23" value="23"
+                      aria-label="End Hours">
+                    <span class="time-separator">:</span>
+                    <input type="number" class="time-input" id="endMinutes" min="0" max="59" value="59"
+                      aria-label="End Minutes">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="picker-actions">
+              <button class="btn btn-secondary" id="todayBtn">Today</button>
+              <button class="btn btn-secondary" id="clearBtn">Clear</button>
+              <button class="btn btn-primary" id="confirmBtn">Confirm</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="manuals">Gõ danh sách các đơn cần kiểm tra vào bên dưới. Mỗi đơn cách nhau bằng dấu cách.</p>
+      <p class="tips">Mẹo: Copy nhiều mã đơn hàng trên sheet và dán vào đây.</p>
+      <textarea id="orders" class="input" type="text" placeholder="Nhập đơn hàng..."></textarea>
+      <div>
+        <button id="check-orders-btn" class="button">Kiểm tra</button>
+      </div>
+      <div id="notification"></div>
+    </div> -->
+
+    <div class="card">
+      <h2 class="title">Lấy thông tin đơn hàng</h2>
 
       <!-- start date time -->
       <div class="container" id="date-time-picker">
@@ -103,16 +189,16 @@
       </div>
       <!-- end date time -->
 
-      <p class="manuals">Gõ danh sách các đơn cần kiểm tra vào bên dưới. Mỗi đơn cách nhau bằng dấu cách.</p>
+      <p class="manuals">Gõ danh sách các đơn cần kiểm tra vào bên dưới.</p>
       <p class="tips">Mẹo: Copy nhiều mã đơn hàng trên sheet và dán vào đây.</p>
-      <textarea id="orders" class="input" type="text" placeholder="Nhập đơn hàng..."></textarea>
+      <textarea id="orders" class="input" type="text" placeholder="Nhập đơn hàng...">S2507219099942</textarea>
       <div>
-        <button id="check-orders-btn" class="button">Kiểm tra</button>
+        <button id="check-orders-btn" class="button" onclick="getOrderDetails()">Kiểm tra</button>
       </div>
       <div id="notification"></div>
     </div>
   </div>
-
+<!-- 
   <div class="modal" id="sessionIdModal">
     <div class="modal-content">
       <h2>Nhập session id</h2>
@@ -121,7 +207,7 @@
       <button id="sessionIdSubmit" class="button">OK</button>
       <button id="sessionIdCancel" class="button">Huỷ</button>
     </div>
-  </div>
+  </div> -->
 
   <div id="loading" class="hide">
     <div>
