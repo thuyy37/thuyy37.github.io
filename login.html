@@ -6,6 +6,8 @@
     <title>Login</title>
     <link rel="icon" type="image/x-icon" href="img/favicon.ico">
     <link rel="stylesheet" href="css/login.css" type="text/css">
+    <link rel="stylesheet" href="css/common.css" type="text/css">
+    <script type="text/javascript" src="js/common.js"></script>
     <script type="text/javascript" src="js/api.js"></script>
     <script type="text/javascript" src="js/login.js"></script>
 </head>
@@ -31,9 +33,15 @@
             <a href="#" onclick="handleForgotPassword()">Forgot Password?</a>
         </div>
 
-        <button class="login-button" onclick="handleLogin()">
-            Sign In
-        </button>
+        <div class="main-actions">
+            <button class="set-session-button" onclick="handleSetSession()">
+                Set Session
+            </button>
+            
+            <button class="login-button" onclick="handleLogin()">
+                Sign In
+            </button>
+        </div>
 
         <div class="divider">
             <span>or</span>
@@ -42,6 +50,23 @@
         <div class="signup-link">
             Don't have an account? <a href="#" onclick="handleSignup()">Sign up</a>
         </div>
+        
+        
+        <div class="modal" id="sessionIdModal">
+            <div class="modal-content">
+                <h2>Nhập session id</h2>
+                <div class="input-group">
+                    <input type="text" id="sessionId" class="input-field" placeholder=" " required/>
+                    <label class="input-label">Session Id</label>
+                </div>
+
+                <div class="main-actions">
+                    <button id="sessionIdSubmit" class="button set-session-button" onclick="closeModal('sessionIdModal')">Huỷ</button>
+                    <button id="sessionIdCancel" class="button login-button" onclick="submitSessionIdModal()">OK</button>
+                </div>
+            </div>
+        </div>
     </div>
+    <div class="notification-container" id="notificationContainer"></div>
 </body>
 </html>
