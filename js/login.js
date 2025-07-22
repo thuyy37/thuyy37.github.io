@@ -203,6 +203,13 @@ document.querySelectorAll('.input-field').forEach(input => {
 
 function handleSetSession() {
    openModal('sessionIdModal');
+   document.getElementById('sessionId').addEventListener('keydown', function (event) {
+      console.log('444444')
+      if (event.key === 'Enter') {
+         submitSessionIdModal();
+         event.preventDefault();
+      }
+   });
 }
 
 /*
