@@ -204,6 +204,9 @@ function getDODetails(DO, start, end) {
             throw new Error("Session expired", {cause: {code: "SESSIONEXPIRED", message: "Session expired" }});
          }
       }
+      if (DOInfo.data.items.length == 0) {
+         return Promise.resolve([]);
+      }
       const id = DOInfo.data.items[0].id;
       const params = `{"id":"${id}"}`
       let {deviceId, timeStamp, sessionId} = prepareOASign('wms.deliveryOrder.detail', params);
@@ -300,6 +303,10 @@ async function getDOsDetails(DOs, start, end) {
       let failed = 0, notFound = 0;
       const result = promises.map(item => {
          console.log('item22222', item)
+         if (item.length == 0) {
+            notFound += 1;
+            return '';
+         }
          doDetails = item[0];
          routeDetails = item[1];
          occupyInventoryLog = item[2]
@@ -312,10 +319,6 @@ async function getDOsDetails(DOs, start, end) {
             obj = doDetails.data;
             routeDetail = routeDetails.data[0];
             occupyInventoryLog = occupyInventoryLog.data[0];
-               if (!obj) {
-                  notFound += 1;
-                  return '';
-               }
                const toCm = (mm) => {
                   return parseInt(mm)/10;
                }
