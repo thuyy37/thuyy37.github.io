@@ -163,7 +163,7 @@ async function handleLogin() {
          button.disabled = false;
 
          // redirect
-         window.location.href = 'index.html';
+         redirectHome()
 
    } catch (error) {
          // Clear password from memory on error
@@ -199,3 +199,31 @@ document.querySelectorAll('.input-field').forEach(input => {
          }
    });
 });
+
+
+function handleSetSession() {
+   openModal('sessionIdModal');
+}
+
+/*
+Modal
+*/
+function openModal(id) {
+   document.getElementById(id).style.display = "flex";
+}
+
+function closeModal(id) {
+   document.getElementById(id).style.display = "none";
+}
+
+function submitSessionIdModal() {
+   const sessId = document.getElementById("sessionId").value.trim();
+   if (!sessId) {
+      showError("Vui lòng nhập vào");
+      return;
+   }
+   sessionStorage.setItem(sessionIdKey, sessId);
+   closeModal('sessionIdModal');
+   showSuccess('Đã lưu session. 謝謝');
+   redirectHome()
+}
