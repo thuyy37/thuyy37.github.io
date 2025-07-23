@@ -212,6 +212,13 @@ function handleSetSession() {
    });
 }
 
+function keydownHandler(event) {
+   if (event.key === 'Enter') {
+      handleLogin();
+      event.preventDefault();
+   }
+}
+
 /*
 Modal
 */
