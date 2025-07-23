@@ -320,7 +320,7 @@ async function getDOsDetails(DOs, start, end) {
             routeDetail = routeDetails.data[0];
             occupyInventoryLog = occupyInventoryLog.data[0];
                const toCm = (mm) => {
-                  return parseInt(mm)/10;
+                  return Math.round(parseInt(mm)/10);
                }
                return `${obj.consigneeName}\t'${obj.phoneNumber}\t${obj.consigneeAddress}\t${routeDetail.codAmount}\t${routeDetail.weight}\t${toCm(routeDetail.length)}\t${toCm(routeDetail.width)}\t${toCm(routeDetail.height)}\t${obj.deliverySn} - ${obj.sellerName}\t${occupyInventoryLog.goodsName}\t`;
          } else {
