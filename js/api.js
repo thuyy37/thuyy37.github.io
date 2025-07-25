@@ -83,6 +83,13 @@ function getTime(startStr, endStr) {
    return {start: formatDate(start), end: formatDate(end)}
 }
 
+function formatCopyText(str) {
+   if (typeof str == 'string' && str.includes('\n')) {
+      return `"${str}"`;
+   }
+   return str;
+}
+
 function login(cred) {
    sessionStorage.setItem(sessionIdKey, '');
    const params = JSON.stringify({"name":cred.user,"password":cred.pw,"terminal":2,"info":"{\"system\":\"Windows 10\",\"mac\":\"\",\"browser\":\"chrome 138.0.0.0\",\"resolution\":\"1920*1080\"}"})
@@ -184,7 +191,12 @@ async function getDOs(DOs, start, end) {
                //   const tsv = rows.map(row => row.join('\t')).join('\n');
                
                //   console.log(tsv);
-               return `${obj.deliverySn}\t${obj.sellerName}\t${obj.orderSn}\t${obj.expressName} ${obj.expressSn}`;
+               return [
+                  obj.deliverySn,
+                  obj.sellerName,
+                  obj.orderSn,
+                  `${obj.expressName}\n${obj.expressSn}`
+               ].map(cell => formatCopyText(cell)).join('\t');
          } else {
                failed += 1;
                return '';
@@ -322,7 +334,24 @@ async function getDOsDetails(DOs, start, end) {
                const toCm = (mm) => {
                   return Math.round(parseInt(mm)/10);
                }
-               return `${obj.consigneeName}\t'${obj.phoneNumber}\t${obj.consigneeAddress}\t${routeDetail.codAmount}\t${routeDetail.weight}\t${toCm(routeDetail.length)}\t${toCm(routeDetail.width)}\t${toCm(routeDetail.height)}\t${obj.deliverySn} - ${obj.sellerName}\t${occupyInventoryLog.goodsName}\t`;
+               const format = (str) => {
+                  if (typeof str == 'string' && str.includes('\n')) {
+                     return `"${str}"`;
+                  }
+                  return str;
+               }
+               return [
+                  obj.consigneeName,
+                  `'${obj.phoneNumber}`,
+                  obj.consigneeAddress,
+                  routeDetail.codAmount,
+                  routeDetail.weight,
+                  toCm(routeDetail.length),
+                  toCm(routeDetail.width),
+                  toCm(routeDetail.height),
+                  `${obj.deliverySn} - ${obj.sellerName}`,
+                  occupyInventoryLog.goodsName
+               ].map(cell => formatCopyText(cell)).join('\t');
          } else {
                failed += 1;
                return '';
