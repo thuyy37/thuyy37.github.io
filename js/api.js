@@ -340,9 +340,31 @@ async function getDOsDetails(DOs, start, end) {
                   }
                   return str;
                }
+               const formatPhone = (phoneNumber) => {
+                    // Remove any non-digit characters except for the country code
+                    const cleaned = phoneNumber.replace(/[^\d+]/g, '');
+                    // Check if the number starts with +84
+                    if (cleaned.startsWith('+84')) {
+                      // Remove the +84 and check if it starts with a zero
+                      const number = cleaned.slice(3);
+                      return number.startsWith('0') ? number : '0' + number;
+                    }
+                    // Check if the number starts with 84 (without the +)
+                    if (cleaned.startsWith('84')) {
+                      // Remove the 84 and check if it starts with a zero
+                      const number = cleaned.slice(2);
+                      return number.startsWith('0') ? number : '0' + number;
+                    }
+                    // If the number already has a zero, return as-is
+                    if (cleaned.startsWith('0')) {
+                      return cleaned;
+                    }
+                    // Return the number as-is (if no matching code)
+                    return cleaned;
+               }
                return [
                   obj.consigneeName,
-                  `'${obj.phoneNumber}`,
+                  `'${formatPhone(obj.phoneNumber)}`,
                   obj.consigneeAddress,
                   routeDetail.codAmount,
                   routeDetail.weight,
